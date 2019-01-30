@@ -8,7 +8,7 @@ const ListItems = props => {
     <ListItem
       key={i}
       placeName={place}
-      onItemPressed={() => props.onItemDeleted(i)}
+      onItemPressed={() => props.onItemSelected(i)}
     />
   ));
 
