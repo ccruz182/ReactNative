@@ -1,9 +1,12 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { Provider } from "react-redux";
 
 import DataInput from "./src/components/DataInput/DataInput";
 import ListItems from "./src/components/ListItems/ListItems";
 import PlaceDetail from "./src/components/PlaceDetail/PlaceDetail";
+
+import configuredStore from "./store/configureStore";
 
 export default class App extends React.Component {
   state = {
@@ -11,6 +14,8 @@ export default class App extends React.Component {
     places: [],
     placeSelected: null
   };
+
+  store = configuredStore();
 
   placeNameChangeHandler = val => {
     this.setState({ placeName: val });
@@ -43,32 +48,34 @@ export default class App extends React.Component {
         placeSelected: null
       };
     });
-  }
+  };
 
   modalCloseHandler = () => {
-    this.setState({placeSelected: null});
-  }
+    this.setState({ placeSelected: null });
+  };
 
   render() {
     return (
-      <View style={styles.container}>
-        <PlaceDetail
-          placeName={this.state.placeSelected}
-          placeImage="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeFdznaHvV6iP1bxQ9t5FFymEThNjWxEDaWtkUN1hf04frLqs1"
-          onPlaceDeleted={this.placeDeletedHandler}
-          onModalClosed={this.modalCloseHandler}
-        />
-        <DataInput
-          placeNameChangeHandler={this.placeNameChangeHandler}
-          placeSubmitHandler={this.placeSubmitHandler}
-          placeName={this.state.placeName}
-        />
+      <Provider store={this.store}>
+        <View style={styles.container}>
+          <PlaceDetail
+            placeName={this.state.placeSelected}
+            placeImage="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeFdznaHvV6iP1bxQ9t5FFymEThNjWxEDaWtkUN1hf04frLqs1"
+            onPlaceDeleted={this.placeDeletedHandler}
+            onModalClosed={this.modalCloseHandler}
+          />
+          <DataInput
+            placeNameChangeHandler={this.placeNameChangeHandler}
+            placeSubmitHandler={this.placeSubmitHandler}
+            placeName={this.state.placeName}
+          />
 
-        <ListItems
-          onItemSelected={this.onItemSelected}
-          places={this.state.places}
-        />
-      </View>
+          <ListItems
+            onItemSelected={this.onItemSelected}
+            places={this.state.places}
+          />
+        </View>
+      </Provider>
     );
   }
 }
