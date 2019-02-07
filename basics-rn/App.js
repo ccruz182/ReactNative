@@ -1,18 +1,17 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Provider } from "react-redux";
+import { connect, Provider } from "react-redux";
 
 import DataInput from "./src/components/DataInput/DataInput";
 import ListItems from "./src/components/ListItems/ListItems";
 import PlaceDetail from "./src/components/PlaceDetail/PlaceDetail";
 
 import configuredStore from "./store/configureStore";
+import {addPlace, deletePlace, selectPlace, unselectPlace} from "./store/actions/index"
 
-export default class App extends React.Component {
+class App extends React.Component {
   state = {
-    placeName: "",
-    places: [],
-    placeSelected: null
+    placeName: ""
   };
 
   store = configuredStore();
@@ -25,33 +24,19 @@ export default class App extends React.Component {
     if (this.state.placeName.trim() === "") {
       return;
     }
-
-    this.setState(prevState => {
-      return {
-        places: prevState.places.concat(prevState.placeName)
-      };
-    });
+    this.props.onAddPlace(this.state.placeName);    
   };
 
   onItemSelected = id => {
-    this.setState(prevState => {
-      return {
-        placeSelected: prevState.places.find((places, i) => i === id)
-      };
-    });
+    this.props.onSelectPlace(id);
   };
 
   placeDeletedHandler = id => {
-    this.setState(prevState => {
-      return {
-        places: prevState.places.filter((el, i) => i !== id),
-        placeSelected: null
-      };
-    });
+    this.props.onDeletePlace(id);
   };
 
   modalCloseHandler = () => {
-    this.setState({ placeSelected: null });
+    this.props.onUnselectPlace();
   };
 
   render() {
@@ -89,3 +74,22 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start"
   }
 });
+
+const mapStateToProps = state => {
+  return {
+    places: state.places.places,
+    placeSelected: state.places.placeSelected
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onAddPlace: (name) => dispatch(addPlace(name)),
+    onDeletePlace: id => dispatch(deletePlace(id)),
+    onSelectPlace: id => dispatch(selectPlace(id)),
+    onUnselectPlace: () => dispatch(unselectPlace())
+
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
