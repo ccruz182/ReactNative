@@ -9,7 +9,8 @@ export default class App extends React.Component {
   state = {
     placeName: "",
     places: [],
-    placeSelected: null
+    placeSelected: null,
+    idSelected: 0
   };
 
   placeNameChangeHandler = val => {
@@ -28,15 +29,16 @@ export default class App extends React.Component {
     });
   };
 
-  onItemSelected = id => {
+  onItemSelected = id => {    
     this.setState(prevState => {
       return {
-        placeSelected: prevState.places.find((places, i) => i === id)
+        placeSelected: prevState.places.find((places, i) => i === id),
+        idSelected: id
       };
     });
   };
 
-  placeDeletedHandler = id => {
+  placeDeletedHandler = id => {    
     this.setState(prevState => {
       return {
         places: prevState.places.filter((el, i) => i !== id),
@@ -57,6 +59,7 @@ export default class App extends React.Component {
           placeImage="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeFdznaHvV6iP1bxQ9t5FFymEThNjWxEDaWtkUN1hf04frLqs1"
           onPlaceDeleted={this.placeDeletedHandler}
           onModalClosed={this.modalCloseHandler}
+          placeId={this.state.idSelected}
         />
         <DataInput
           placeNameChangeHandler={this.placeNameChangeHandler}
